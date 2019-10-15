@@ -1,34 +1,21 @@
-# Typescript Seed project
+# The `co` kata
 
-This is a barebones setup for a running application with Typescript and Node.
+## Implement a Simple Coroutine Runner
 
-Features:
+This is pretty much how `async`/`await` works behind the scenes, except you won’t be using `async`/`await` syntax. Instead, you will create a function called `co` (or whatever you’d like to call it) that will accept a generator function and return a promise that resolves to the return value from the generator. You may call `yield` on any thenable values within the generator (bonus points for thunks too).
 
-- node version specified in .nvmrc
-- Typescript installed as dev dependency
-- `npm run watch` configured with nodemon and ts-node
-- `npm run watch:debug` configured with `--inspect-brk` flag
-- tsconfig and tslint configs set up with sensible defaults
-- jest configured for unit testing with sensible defaults
-- This README
+For example, the following two expressions should be the same:
 
-## Using this seed
+```js
+getValueFromPromise1()
+  .then(val1 => Promise.all([val1, getValueFromPromise2(val1)]))
+  .then(([val1, val2]) => getValueFromPromise3(val1, val2));
+```
 
-Fork this repo and start coding adding code to the `src/` directory.
-
-## Developing
-
-Develop and test the running application with `npm run watch` or `npm run watch:debug`
-
-Run unit tests with `npm run test`
-
-## Run your application
-
-Build the app first with `npm run build`
-
-Run the app with `npm start`
-
-## Contributing
-
-Feel free to add more sensible defaults for a basic node application, such as a "prettier" config, if that would
-best, or a `npm run tdd` script for running tests in a watch mode.
+```js
+co(function* () {
+  const val1 = yield getValueFromPromise1();
+  const val2 = yield getValueFromPromise2(val1);
+  return getValueFromPromise3(val1, val2);
+});
+```
